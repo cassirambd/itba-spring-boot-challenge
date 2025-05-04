@@ -7,12 +7,15 @@ import com.itba.challenge.mapper.ProductMapper;
 import com.itba.challenge.repository.ProductRepository;
 import com.itba.challenge.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -35,20 +38,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse saveProduct(ProductDto productDto) {
+        log.info("Saving product {}", productDto);
         Product product = productRepository.save(productMapper.toEntity(productDto));
+        log.info("Product saved id {}", product.getProductId());
 
         return productMapper.toResponse(product);
     }
 
     @Override
+    @Transactional
     public ProductResponse updateProduct(Long id, ProductDto productDto) {
+        log.info("Updating product {}", productDto);
         Product productToUpdate = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
 
         productToUpdate.setProductName(productDto.getProductName());
         productToUpdate.setProductBrand(productDto.getProductBrand());
         productToUpdate.setProductSuitable(productDto.getProductSuitable());
         productToUpdate.setProductExpirationDate(productDto.getProductExpirationDate());
+        log.info("Product updated id {}", productToUpdate.getProductId());
 
         return productMapper.toResponse(productRepository.save(productToUpdate));
     }
