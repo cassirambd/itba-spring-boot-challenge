@@ -32,4 +32,11 @@ public class Product {
 
     @Column(name = "DA_PRODUCT_EXPIRATION_DATE")
     private LocalDate productExpirationDate;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.productEntryDate == null) {
+            this.productEntryDate = LocalDate.now();
+        }
+    }
 }

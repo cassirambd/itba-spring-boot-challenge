@@ -1,6 +1,7 @@
 package com.itba.challenge.controller;
 
-import com.itba.challenge.entity.Product;
+import com.itba.challenge.controller.response.ProductResponse;
+import com.itba.challenge.dto.ProductDto;
 import com.itba.challenge.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,23 +17,23 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/list")
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
         return new ResponseEntity<>(productService.findAllProducts(), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return new ResponseEntity<>(productService.findProductById(id).orElseThrow(() -> new RuntimeException("Product not found")), HttpStatus.ACCEPTED);
     }
 
     @PostMapping()
-    public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
-        return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
+    public ResponseEntity<ProductResponse> saveProduct(@RequestBody ProductDto productDto) {
+        return new ResponseEntity<>(productService.saveProduct(productDto), HttpStatus.CREATED);
     }
 
     @PutMapping()
-    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
-        return new ResponseEntity<>(productService.updateProduct(product.getProductId(), product), HttpStatus.OK);
+    public ResponseEntity<ProductResponse> updateProduct(@RequestBody ProductDto productDto) {
+        return new ResponseEntity<>(productService.updateProduct(productDto.getProductId(), productDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

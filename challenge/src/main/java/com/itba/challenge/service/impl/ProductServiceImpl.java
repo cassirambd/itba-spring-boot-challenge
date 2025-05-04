@@ -1,6 +1,9 @@
 package com.itba.challenge.service.impl;
 
+import com.itba.challenge.controller.response.ProductResponse;
+import com.itba.challenge.dto.ProductDto;
 import com.itba.challenge.entity.Product;
+import com.itba.challenge.mapper.ProductMapper;
 import com.itba.challenge.repository.ProductRepository;
 import com.itba.challenge.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -14,28 +17,39 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     @Override
-    public List<Product> findAllProducts() {
-        return List.of((Product) this.productRepository.findAll());
+    public List<ProductResponse> findAllProducts() {
+        List<Product> products = this.productRepository.findAll();
+
+        return products.stream().map(productMapper::toResponse).toList();
     }
 
     @Override
-    public Optional<Product> findProductById(Long id) {
-        return Optional.ofNullable(productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found")));
+    public Optional<ProductResponse> findProductById(Long id) {
+        Product product = this.productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+
+        return productMapper.toResponse(product) == null ? Optional.empty() : Optional.of(productMapper.toResponse(product));
     }
 
     @Override
-    public Product saveProduct(Product product) {
-        return this.productRepository.save(product);
+    public ProductResponse saveProduct(ProductDto productDto) {
+        Product product = this.productRepository.save(productMapper.toEntity(productDto));
+
+        return productMapper.toResponse(product);
     }
 
     @Override
-    public Product updateProduct(Long id, Product product) {
-        Product productToUpdate = this.findProductById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-        productToUpdate.setProductName(product.getProductName());
+    public ProductResponse updateProduct(Long id, ProductDto productDto) {
+        Product productToUpdate = this.productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
 
-        return this.productRepository.save(productToUpdate);
+        productToUpdate.setProductName(productDto.getProductName());
+        productToUpdate.setProductBrand(productDto.getProductBrand());
+        productToUpdate.setProductSuitable(productDto.getProductSuitable());
+        productToUpdate.setProductExpirationDate(productDto.getProductExpirationDate());
+
+        return productMapper.toResponse(this.productRepository.save(productToUpdate));
     }
 
     @Override
