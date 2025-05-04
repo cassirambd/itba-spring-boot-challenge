@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final SmsServiceImpl smsService;
 
     @Override
     public List<ProductResponse> findAllProducts() {
@@ -41,11 +43,27 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponse saveProduct(ProductDto productDto) {
         log.info("Saving product {}", productDto);
-        Product product = productRepository.save(productMapper.toEntity(productDto));
-        log.info("Product saved id {}", product.getProductId());
+        Product productEntity = productMapper.toEntity(productDto);
+        Product savedProduct = productRepository.save(productEntity);
+        log.info("Product saved, id {}", savedProduct.getProductId());
 
-        return productMapper.toResponse(product);
+        String smsMessage = buildSavedProductSmsMessage(savedProduct);
+        smsService.sendSms(smsMessage);
+
+        return productMapper.toResponse(savedProduct);
     }
+
+    private String buildSavedProductSmsMessage(Product product) {
+        String formattedDate = product.getProductExpirationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        return String.format(
+                "Product %s %s added successfully! %n%nExpiration date: %s.",
+                product.getProductName(),
+                product.getProductBrand(),
+                formattedDate
+        );
+    }
+
 
     @Override
     @Transactional
@@ -57,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
         productToUpdate.setProductBrand(productDto.getProductBrand());
         productToUpdate.setProductSuitable(productDto.getProductSuitable());
         productToUpdate.setProductExpirationDate(productDto.getProductExpirationDate());
-        log.info("Product updated id {}", productToUpdate.getProductId());
+        log.info("Product updated, id {}", productToUpdate.getProductId());
 
         return productMapper.toResponse(productRepository.save(productToUpdate));
     }
