@@ -7,6 +7,7 @@ import com.itba.challenge.mapper.ProductMapper;
 import com.itba.challenge.repository.ProductRepository;
 import com.itba.challenge.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,44 +22,47 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponse> findAllProducts() {
-        List<Product> products = this.productRepository.findAll();
+        List<Product> products = productRepository.findAll();
 
         return products.stream().map(productMapper::toResponse).toList();
     }
 
     @Override
     public Optional<ProductResponse> findProductById(Long id) {
-        Product product = this.productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
 
         return productMapper.toResponse(product) == null ? Optional.empty() : Optional.of(productMapper.toResponse(product));
     }
 
     @Override
     public ProductResponse saveProduct(ProductDto productDto) {
-        Product product = this.productRepository.save(productMapper.toEntity(productDto));
+        Product product = productRepository.save(productMapper.toEntity(productDto));
 
         return productMapper.toResponse(product);
     }
 
     @Override
     public ProductResponse updateProduct(Long id, ProductDto productDto) {
-        Product productToUpdate = this.productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        Product productToUpdate = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
 
         productToUpdate.setProductName(productDto.getProductName());
         productToUpdate.setProductBrand(productDto.getProductBrand());
         productToUpdate.setProductSuitable(productDto.getProductSuitable());
         productToUpdate.setProductExpirationDate(productDto.getProductExpirationDate());
 
-        return productMapper.toResponse(this.productRepository.save(productToUpdate));
+        return productMapper.toResponse(productRepository.save(productToUpdate));
     }
 
     @Override
     public boolean deleteProductById(Long id) {
         try {
-            this.productRepository.deleteById(id);
+            if (!productRepository.existsById(id)) {
+                throw new RuntimeException("Product not found");
+            }
+            productRepository.deleteById(id);
             return true;
-        } catch (Exception e) {
-            return false;
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Product not found");
         }
     }
 }
