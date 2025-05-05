@@ -3,12 +3,12 @@ package com.itba.challenge.service.impl;
 import com.itba.challenge.controller.response.ProductResponse;
 import com.itba.challenge.dto.ProductDto;
 import com.itba.challenge.entity.Product;
+import com.itba.challenge.exception.ProductNotFoundException;
 import com.itba.challenge.mapper.ProductMapper;
 import com.itba.challenge.repository.ProductRepository;
 import com.itba.challenge.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +34,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<ProductResponse> findProductById(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
+        ProductResponse productResponse = productMapper.toResponse(product);
 
-        return productMapper.toResponse(product) == null ? Optional.empty() : Optional.of(productMapper.toResponse(product));
+        return Optional.ofNullable(productResponse);
     }
 
     @Override
@@ -64,12 +66,11 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
-
     @Override
     @Transactional
     public ProductResponse updateProduct(Long id, ProductDto productDto) {
         log.info("Updating product {}", productDto);
-        Product productToUpdate = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        Product productToUpdate = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
 
         productToUpdate.setProductName(productDto.getProductName());
         productToUpdate.setProductBrand(productDto.getProductBrand());
@@ -84,12 +85,12 @@ public class ProductServiceImpl implements ProductService {
     public boolean deleteProductById(Long id) {
         try {
             if (!productRepository.existsById(id)) {
-                throw new RuntimeException("Product not found");
+                throw new ProductNotFoundException("Product with id " + id + " not found");
             }
             productRepository.deleteById(id);
             return true;
-        } catch (DataAccessException e) {
-            throw new RuntimeException("Product not found");
+        } catch (Exception e) {
+            throw new ProductNotFoundException("Product with id " + id + " not found");
         }
     }
 }
