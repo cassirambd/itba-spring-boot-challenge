@@ -7,6 +7,7 @@ import com.itba.challenge.exception.ProductNotFoundException;
 import com.itba.challenge.mapper.ProductMapper;
 import com.itba.challenge.repository.ProductRepository;
 import com.itba.challenge.service.ProductService;
+import com.itba.challenge.service.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final SmsServiceImpl smsService;
+    private final SmsService smsService;
 
     @Override
     public List<ProductResponse> findAllProducts() {
@@ -50,6 +51,8 @@ public class ProductServiceImpl implements ProductService {
         log.info("Product saved, id {}", savedProduct.getProductId());
 
         String smsMessage = buildSavedProductSmsMessage(savedProduct);
+
+        log.info("Sending SMS {}", smsMessage);
         smsService.sendSms(smsMessage);
 
         return productMapper.toResponse(savedProduct);

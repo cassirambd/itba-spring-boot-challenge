@@ -6,6 +6,7 @@ import com.twilio.type.PhoneNumber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -19,18 +20,23 @@ public class SmsServiceImpl implements SmsService {
     @Value("${twilio.phone.to}")
     private String destinationNumber;
 
+    @Async
     @Override
     public void sendSms(String messageContent) {
-        validateParameters(destinationNumber, messageContent);
+        try {
+            log.info("Thread executing SMS: {}", Thread.currentThread().getName());
 
-        String number = destinationNumber;
-        Message message = createMessage(number, messageContent);
+            validateParameters(destinationNumber, messageContent);
+            createMessage(destinationNumber, messageContent);
 
-        log.info("Sending sms to {} with message {}", destinationNumber, message);
+            log.info("SMS sent to {} with message {}!", destinationNumber, messageContent);
+        } catch (Exception e) {
+            log.error("Failed to send SMS: {}", e.getMessage(), e);
+        }
     }
 
-    private Message createMessage(String number, String content) {
-        return Message.creator(
+    private void createMessage(String number, String content) {
+        Message.creator(
                         new PhoneNumber(number),
                         new PhoneNumber(sourceNumber),
                         content)
