@@ -21,11 +21,11 @@ public class Product {
     @Column(name = "VA_PRODUCT_NAME", nullable = false, length = 80)
     private String productName;
 
-    @Column(name = "BO_PRODUCT_SUITABLE")
-    private Boolean productSuitable;
-
     @Column(name = "VA_PRODUCT_BRAND", length = 50)
     private String productBrand;
+
+    @Column(name = "BO_PRODUCT_SUITABLE")
+    private Boolean productSuitable;
 
     @Column(name = "DA_PRODUCT_ENTRY_DATE")
     private LocalDate productEntryDate;

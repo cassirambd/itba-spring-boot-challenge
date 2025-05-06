@@ -38,7 +38,7 @@ class ProductServiceImplTest {
 
     @Test
     void shouldSaveProductAndSendSms() {
-        ProductDto productDto = new ProductDto(null, "Product", true, "Brand", LocalDate.now(), LocalDate.now().plusMonths(3));
+        ProductDto productDto = new ProductDto(null, "Product", "Brand", true, LocalDate.now(), LocalDate.now().plusMonths(3));
         Product productEntity = new Product();
         Product productSaved = new Product();
         ProductResponse productResponse = new ProductResponse();

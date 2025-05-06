@@ -16,7 +16,7 @@ class ProductControllerTest {
 
     private final ProductService productService = mock(ProductService.class);
     private final ProductController controller = new ProductController(productService);
-    private final ProductResponse product = new ProductResponse(1L, "Product", true, "Brand", "2025-08-01");
+    private final ProductResponse product = new ProductResponse(1L, "Product", "Brand", true, "2025-08-01");
     private final HttpStatus expectedStatus = HttpStatus.ACCEPTED;
 
     private static final String STATUS_MSG = "Response status should be %d but was %d";

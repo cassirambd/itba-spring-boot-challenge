@@ -10,7 +10,7 @@ import lombok.*;
 public class ProductResponse {
     private Long productId;
     private String productName;
-    private Boolean productSuitable;
     private String productBrand;
+    private Boolean productSuitable;
     private String productExpirationDate;
 }

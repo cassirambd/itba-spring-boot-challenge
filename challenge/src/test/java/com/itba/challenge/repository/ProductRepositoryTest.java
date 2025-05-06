@@ -37,9 +37,9 @@ class ProductRepositoryTest {
         return new Product(
                 null,
                 "Test",
-                true,
                 "Brand",
-                null,
+                true,
+                LocalDate.now(),
                 LocalDate.now().plusMonths(3)
         );
     }

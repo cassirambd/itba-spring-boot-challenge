@@ -3,6 +3,7 @@ package com.itba.challenge.controller;
 import com.itba.challenge.controller.response.ProductResponse;
 import com.itba.challenge.dto.ProductDto;
 import com.itba.challenge.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +28,12 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<ProductResponse> saveProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductResponse> saveProduct(@Valid @RequestBody ProductDto productDto) {
         return new ResponseEntity<>(productService.saveProduct(productDto), HttpStatus.CREATED);
     }
 
     @PutMapping()
-    public ResponseEntity<ProductResponse> updateProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductResponse> updateProduct(@Valid @RequestBody ProductDto productDto) {
         return new ResponseEntity<>(productService.updateProduct(productDto.getProductId(), productDto), HttpStatus.OK);
     }
 
