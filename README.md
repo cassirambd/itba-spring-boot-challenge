@@ -38,11 +38,15 @@ Proyecto realizado como challenge para ITBA.
 curl --location 'http://localhost:8080/api/v1/product/list'
 ```
 
+![GET ALL](images/getall.png)
+
 ### Obtener producto según id
 
 ```
 curl --location 'http://localhost:8080/api/v1/product/2'
 ```
+
+![GET](images/get.png)
 
 ### Crear nuevo producto
 
@@ -56,6 +60,8 @@ curl --location 'http://localhost:8080/api/v1/product' \
   "productExpirationDate": "2026-02-24"
 }'
 ```
+
+![POST](images/post.png)
 
 ### Actualizar producto
 
@@ -71,8 +77,12 @@ curl --location --request PUT 'http://localhost:8080/api/v1/product' \
 }'
 ```
 
+![PUT](images/put.png)
+
 ### Eliminar producto
 
 ```
 curl --location --request DELETE 'http://localhost:8080/api/v1/product/5'
 ```
+
+![DELETE](images/delete.png)
