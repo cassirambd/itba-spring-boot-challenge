@@ -19,6 +19,7 @@ public class ProductDto {
     @Size(max = 80, message = "Product name must be less than 80 characters")
     private String productName;
 
+    @NotBlank(message = "Product name is required")
     @Size(max = 50, message = "Product brand must be less than 50 characters")
     private String productBrand;
 
