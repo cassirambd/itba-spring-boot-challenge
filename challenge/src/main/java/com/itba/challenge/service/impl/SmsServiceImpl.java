@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SmsServiceImpl implements SmsService {
-
     @Value("${twilio.phone.from}")
     private String sourceNumber;
 

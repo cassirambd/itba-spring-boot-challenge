@@ -2,6 +2,7 @@ package com.itba.challenge.controller;
 
 import com.itba.challenge.controller.response.ProductResponse;
 import com.itba.challenge.dto.ProductDto;
+import com.itba.challenge.exception.ProductNotFoundException;
 import com.itba.challenge.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,35 +17,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private static final String PRODUCT_NOT_FOUND = "Product not found.";
+
 
     @GetMapping("/list")
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        return new ResponseEntity<>(productService.findAllProducts(), HttpStatus.ACCEPTED);
+    public ResponseEntity<List<ProductResponse>> findAllProducts() {
+        return ResponseEntity.ok(productService.findAllProducts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
-        return new ResponseEntity<>(productService.findProductById(id).orElseThrow(() -> new RuntimeException("Product not found")), HttpStatus.ACCEPTED);
+    public ResponseEntity<ProductResponse> findProductById(@PathVariable final Long id) {
+        return ResponseEntity.ok(productService.findProductById(id));
     }
 
     @PostMapping()
-    public ResponseEntity<ProductResponse> saveProduct(@Valid @RequestBody ProductDto productDto) {
-        return new ResponseEntity<>(productService.saveProduct(productDto), HttpStatus.CREATED);
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody final ProductDto productDto) {
+        ProductResponse createdProduct = productService.createProduct(productDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
     @PutMapping()
-    public ResponseEntity<ProductResponse> updateProduct(@Valid @RequestBody ProductDto productDto) {
-        return new ResponseEntity<>(productService.updateProduct(productDto.getProductId(), productDto), HttpStatus.OK);
+    public ResponseEntity<ProductResponse> updateProduct(@Valid @RequestBody final ProductDto productDto) {
+        ProductResponse updatedProduct = productService.updateProduct(productDto.getProductId(), productDto);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteProductById(@PathVariable Long id) {
-        boolean response = productService.deleteProductById(id);
-
-        if (!response) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> deleteProductById(@PathVariable final Long id) {
+        boolean deleted = productService.deleteProductById(id);
+        return deleted
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }

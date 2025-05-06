@@ -37,7 +37,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void shouldSaveProductAndSendSms() {
+    void shouldcreateProductAndSendSms() {
         ProductDto productDto = new ProductDto(null, "Product", "Brand", true, LocalDate.now(), LocalDate.now().plusMonths(3));
         Product productEntity = new Product();
         Product productSaved = new Product();
@@ -48,7 +48,7 @@ class ProductServiceImplTest {
         when(productRepository.save(productEntity)).thenReturn(productSaved);
         when(productMapper.toResponse(productSaved)).thenReturn(productResponse);
 
-        ProductResponse response = productService.saveProduct(productDto);
+        ProductResponse response = productService.createProduct(productDto);
 
         assertNotNull(response, "Response should not be null");
         verify(smsService).sendSms(any());

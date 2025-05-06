@@ -17,7 +17,7 @@ class ProductControllerTest {
     private final ProductService productService = mock(ProductService.class);
     private final ProductController controller = new ProductController(productService);
     private final ProductResponse product = new ProductResponse(1L, "Product", "Brand", true, "2025-08-01");
-    private final HttpStatus expectedStatus = HttpStatus.ACCEPTED;
+    private final HttpStatus expectedStatus = HttpStatus.OK;
 
     private static final String STATUS_MSG = "Response status should be %d but was %d";
     private static final String BODY_NULL_MSG = "Response body should not be null";
@@ -30,7 +30,7 @@ class ProductControllerTest {
 
         when(productService.findAllProducts()).thenReturn(expectedProducts);
 
-        ResponseEntity<List<ProductResponse>> response = controller.getAllProducts();
+        ResponseEntity<List<ProductResponse>> response = controller.findAllProducts();
 
         assertEquals(expectedStatus, response.getStatusCode(), String.format(STATUS_MSG, expectedStatus.value(), response.getStatusCode().value()));
         assertNotNull(response.getBody(), BODY_NULL_MSG);
@@ -40,9 +40,9 @@ class ProductControllerTest {
 
     @Test
     void shouldReturnProductById() {
-        when(productService.findProductById(product.getProductId())).thenReturn(Optional.of(product));
+        when(productService.findProductById(product.getProductId())).thenReturn((product));
 
-        ResponseEntity<ProductResponse> response = controller.getProductById(product.getProductId());
+        ResponseEntity<ProductResponse> response = controller.findProductById(product.getProductId());
 
         assertEquals(expectedStatus, response.getStatusCode(), String.format(STATUS_MSG, expectedStatus.value(), response.getStatusCode().value()));
         assertNotNull(response.getBody(), BODY_NULL_MSG);

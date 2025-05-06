@@ -34,7 +34,7 @@ public class Product {
     private LocalDate productExpirationDate;
 
     @PrePersist
-    public void prePersist() {
+    public void setDefaultProductEntryDate() {
         if (this.productEntryDate == null) {
             this.productEntryDate = LocalDate.now();
         }

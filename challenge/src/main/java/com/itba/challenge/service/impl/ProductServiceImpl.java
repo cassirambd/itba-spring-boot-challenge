@@ -15,12 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
+    private static final String PRODUCT_NOT_FOUND = "Product with id %d not found.";
+    private static final String PRODUCT_NAME_EMPTY = "(Product name is empty)";
+    private static final String PRODUCT_BRAND_EMPTY = "(Brand is empty)";
+    private static final String PRODUCT_EXPIRATION_DATE_EMPTY = "(Expiration date is empty)";
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
@@ -34,17 +37,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductResponse> findProductById(Long id) {
+    public ProductResponse findProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
-        ProductResponse productResponse = productMapper.toResponse(product);
-
-        return Optional.ofNullable(productResponse);
+                .orElseThrow(() -> new ProductNotFoundException(String.format(PRODUCT_NOT_FOUND, id)));
+        return productMapper.toResponse(product);
     }
 
     @Override
     @Transactional
-    public ProductResponse saveProduct(ProductDto productDto) {
+    public ProductResponse createProduct(ProductDto productDto) {
         log.info("Saving product {}", productDto);
         Product productEntity = productMapper.toEntity(productDto);
         Product savedProduct = productRepository.save(productEntity);
@@ -59,11 +60,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private String buildSavedProductSmsMessage(Product product) {
-        String productName = product.getProductName() != null ? product.getProductName() : "(Sin nombre)";
-        String productBrand = product.getProductBrand() != null ? product.getProductBrand() : "(Sin marca)";
+        String productName = product.getProductName() != null ? product.getProductName() : PRODUCT_NAME_EMPTY;
+        String productBrand = product.getProductBrand() != null ? product.getProductBrand() : PRODUCT_BRAND_EMPTY;
         String formattedDate = product.getProductExpirationDate() != null
                 ? product.getProductExpirationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                : "(Sin fecha de vencimiento)";
+                : PRODUCT_EXPIRATION_DATE_EMPTY;
 
         return String.format(
                 "Product %s %s added successfully! %n%nExpiration date: %s.",
@@ -77,27 +78,28 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponse updateProduct(Long id, ProductDto productDto) {
         log.info("Updating product {}", productDto);
-        Product productToUpdate = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
+        Product productToUpdate = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(String.format(PRODUCT_NOT_FOUND, id)));
 
-        productToUpdate.setProductName(productDto.getProductName());
-        productToUpdate.setProductBrand(productDto.getProductBrand());
-        productToUpdate.setProductSuitable(productDto.getProductSuitable());
-        productToUpdate.setProductExpirationDate(productDto.getProductExpirationDate());
+        updateProductFields(productToUpdate, productDto);
         log.info("Product updated, id {}", productToUpdate.getProductId());
 
         return productMapper.toResponse(productRepository.save(productToUpdate));
     }
 
+    private void updateProductFields(Product product, ProductDto dto) {
+        product.setProductName(dto.getProductName());
+        product.setProductBrand(dto.getProductBrand());
+        product.setProductSuitable(dto.getProductSuitable());
+        product.setProductExpirationDate(dto.getProductExpirationDate());
+    }
+
     @Override
     public boolean deleteProductById(Long id) {
-        try {
-            if (!productRepository.existsById(id)) {
-                throw new ProductNotFoundException("Product with id " + id + " not found");
-            }
-            productRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            throw new ProductNotFoundException("Product with id " + id + " not found");
+        if (!productRepository.existsById(id)) {
+            throw new ProductNotFoundException(String.format(PRODUCT_NOT_FOUND, id));
         }
+        productRepository.deleteById(id);
+        return true;
     }
 }
