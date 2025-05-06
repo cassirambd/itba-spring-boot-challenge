@@ -20,11 +20,17 @@ Proyecto realizado como challenge para ITBA.
 
 ### Localmente
 
+* Clonar el repositorio
+
 ```bash
    git clone https://github.com/cassirambd/itba-spring-boot-challenge.git
    cd itba-spring-boot-challenge
    cd challenge
 ```
+
+* Ejecutar el comando `mvn clean install`
+* Ejecutar el comando `mvn spring-boot:run`
+* Acceder a la API: `http://localhost:8080/api/v1/product`
 
 ### Vía Docker
 
