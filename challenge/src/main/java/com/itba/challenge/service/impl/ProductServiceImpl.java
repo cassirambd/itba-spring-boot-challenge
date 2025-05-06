@@ -59,12 +59,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private String buildSavedProductSmsMessage(Product product) {
-        String formattedDate = product.getProductExpirationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String productName = product.getProductName() != null ? product.getProductName() : "(Sin nombre)";
+        String productBrand = product.getProductBrand() != null ? product.getProductBrand() : "(Sin marca)";
+        String formattedDate = product.getProductExpirationDate() != null
+                ? product.getProductExpirationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                : "(Sin fecha de vencimiento)";
 
         return String.format(
                 "Product %s %s added successfully! %n%nExpiration date: %s.",
-                product.getProductName(),
-                product.getProductBrand(),
+                productName,
+                productBrand,
                 formattedDate
         );
     }

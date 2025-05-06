@@ -28,5 +28,4 @@ public interface ProductMapper {
         if (date == null) return null;
         return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
-
 }
