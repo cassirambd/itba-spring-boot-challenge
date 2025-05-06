@@ -1,0 +1,192 @@
+openapi: 3.0.4
+
+info:
+  title: API REST para gestión de productos alimenticios
+  description: Challenge realizado para ITBA en Java Spring Boot, el cual consiste en una API de gestión de productos alimenticios u otros.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1/product/
+tags:
+  - name: Productos
+
+paths:
+  /list:
+    get:
+      tags:
+        - Productos
+      summary: Obtener el listado de todos los productos.
+      responses:
+        200:
+          $ref: '#/components/responses/OK'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /{id}:
+    get:
+      tags:
+        - Productos
+      summary: Obtener un producto según id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          $ref: '#/components/responses/OK'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /:
+    post:
+      tags:
+        - Productos
+      summary: Crear un nuevo producto.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateBody'
+      responses:
+        201:
+          $ref: '#/components/responses/Created'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /{productId}:
+    put:
+      tags:
+        - Productos
+      summary: Actualizar datos de un producto existente.
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdateBody'
+      responses:
+        200:
+          $ref: '#/components/responses/OK'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+
+  /{idProduct}:
+    delete:
+      tags:
+        - Productos
+      summary: Actualizar datos de un producto existente.
+      parameters:
+        - in: path
+          name: idProduct
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          $ref: '#/components/responses/NoContent'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+
+components:
+
+  responses:
+    OK:
+      description: (OK) OK.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductResponse'
+    Created:
+      description: (Created) Producto creado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductResponse'
+    NoContent:
+      description: (No Content) La solicitud fue exitosa, pero no hay contenido adicional para enviar.
+    BadRequest:
+      description: (Bad Request) Los datos enviados son incorrectos o hay datos obligatorios no enviados.
+    NotFound:
+      description: (Not Found) Producto no encontrado.
+    ServerError:
+      description: (Internal Server Error) Error en servidor.
+
+  schemas:
+    ProductResponse:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+        productBrand:
+          type: string
+        productSuitable:
+          type: boolean
+        productExpirationDate:
+          type: string
+          format: date
+
+    ProductCreateBody:
+      type: object
+      properties:
+        productName:
+          type: string
+        productBrand:
+          type: string
+        productSuitable:
+          type: boolean
+        productExpirationDate:
+          type: string
+          format: date
+      required:
+        - productName
+        - productBrand
+        - productSuitable
+
+    ProductUpdateBody:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+        productBrand:
+          type: string
+        productSuitable:
+          type: boolean
+        productExpirationDate:
+          type: string
+          format: date
+      required:
+        - productId
+        - productName
+        - productBrand
+        - productSuitable
