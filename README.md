@@ -35,6 +35,9 @@ Proyecto realizado como challenge para ITBA.
 
 ### Vía Docker
 
+* Abrir Docker Desktop
+* Ejecutar en la consola del IDE:
+
 ```bash
    docker build -t challenge .
    docker run -p 8080:8080 challenge
