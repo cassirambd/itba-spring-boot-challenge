@@ -31,12 +31,26 @@ Proyecto realizado como challenge para ITBA.
 * Ejecutar el comando `mvn clean install`
 * Ejecutar el comando `mvn spring-boot:run`
 * Acceder a la API: `http://localhost:8080/api/v1/product`
+* Acceder a la consola de H2: `http://localhost:8080/h2-console`
 
 ### Vía Docker
+
+```bash
+   docker build -t challenge .
+   docker run -p 8080:8080 challenge
+```
 
 ---
 
 ## Endpoints
+
+### Swagger
+
+* Acceder a https://editor.swagger.io/
+* Importar o copiar el contenido del archivo challenge-api.yaml que se encuentra dentro de la carpeta docs y pegarlo en
+  el editor.
+
+### Postman/Curl
 
 ### Obtener todos los productos
 
