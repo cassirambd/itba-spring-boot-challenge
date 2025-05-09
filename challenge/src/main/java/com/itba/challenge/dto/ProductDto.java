@@ -8,18 +8,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import static com.itba.challenge.constants.Constants.*;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ProductDto {
-    public static final String NAME_REQUIRED = "Product name is required";
-    public static final String NAME_SIZE = "Product name must be less than 80 characters";
-    public static final String BRAND_REQUIRED = "Product brand is required";
-    public static final String BRAND_SIZE = "Product brand must be less than 50 characters";
-    public static final String SUITABLE_REQUIRED = "Product suitability is required";
-    public static final String EXPIRATION_FUTURE = "Product expiration date must be in the future";
-
     private Long productId;
 
     @NotBlank(message = NAME_REQUIRED)

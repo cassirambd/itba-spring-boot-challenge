@@ -17,8 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    private static final String PRODUCT_NOT_FOUND = "Product not found.";
-
 
     @GetMapping("/list")
     public ResponseEntity<List<ProductResponse>> findAllProducts() {

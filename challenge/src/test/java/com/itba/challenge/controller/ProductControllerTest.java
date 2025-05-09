@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 
+import static com.itba.challenge.constants.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -18,11 +18,6 @@ class ProductControllerTest {
     private final ProductController controller = new ProductController(productService);
     private final ProductResponse product = new ProductResponse(1L, "Product", "Brand", true, "2025-08-01");
     private final HttpStatus expectedStatus = HttpStatus.OK;
-
-    private static final String STATUS_MSG = "Response status should be %d but was %d";
-    private static final String BODY_NULL_MSG = "Response body should not be null";
-    private static final String BODY_SIZE_MSG = "Response body should have %d products but has %d";
-    private static final String BODY_NAME_MSG = "Response body should have product name %s but has %s";
 
     @Test
     void shouldReturnAllProducts() {

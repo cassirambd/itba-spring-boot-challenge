@@ -16,15 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.itba.challenge.constants.Constants.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private static final String PRODUCT_NOT_FOUND = "Product with id %d not found.";
-    private static final String PRODUCT_NAME_EMPTY = "(Product name is empty)";
-    private static final String PRODUCT_BRAND_EMPTY = "(Brand is empty)";
-    private static final String PRODUCT_EXPIRATION_DATE_EMPTY = "(Expiration date is empty)";
-
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final SmsService smsService;
