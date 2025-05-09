@@ -33,6 +33,8 @@ Proyecto realizado como challenge para ITBA.
 * Acceder a la API: `http://localhost:8080/api/v1/product`
 * Acceder a la consola de H2: `http://localhost:8080/h2-console`
 
+![H2](images/h2.png)
+
 ### Vía Docker
 
 * Abrir Docker Desktop
