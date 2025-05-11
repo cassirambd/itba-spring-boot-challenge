@@ -38,6 +38,7 @@ Proyecto realizado como challenge para ITBA.
 ### Vía Docker
 
 * Abrir Docker Desktop
+* Posicionarse en /itba-spring-boot-challenge
 * Ejecutar en la consola del IDE:
 
 ```bash
